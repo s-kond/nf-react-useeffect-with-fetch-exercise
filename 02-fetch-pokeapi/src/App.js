@@ -6,16 +6,22 @@ Hint: Don't forget the dependency array!
 */
 
 import "./styles.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const [pokemon, setPokemon] = useState([]);
+  const [nextURL, setNextURL] = useState("https://pokeapi.co/api/v2/pokemon");
+
+  useEffect(()=> {
+    loadPokemon();
+  }, []);
 
   async function loadPokemon() {
     try {
-      const response = await fetch("https://pokeapi.co/api/v2/pokemon");
+      const response = await fetch(nextURL);
       const data = await response.json();
       setPokemon(data.results);
+      setNextURL(data.next);
     } catch (error) {
       console.log(error);
     }
@@ -23,7 +29,7 @@ export default function App() {
 
   return (
     <main className="App">
-      <button onClick={loadPokemon}>Load Pokémon</button>
+      <button onClick={loadPokemon}>Next 20 Pokémon</button>
       <ul>
         {pokemon.map(({ name }) => (
           <li key={name}>{name}</li>
