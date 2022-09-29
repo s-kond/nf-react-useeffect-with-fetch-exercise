@@ -11,7 +11,19 @@ export default function App() {
     latitude: 0,
   })
 
-  async function getISSCoords() {}
+  useEffect(() => {
+    const interval = setInterval(getISSCoords, 5000);
+    return () => clearInterval(interval)
+  }, [])
+
+  async function getISSCoords() {
+    fetch(URL)
+      .then(response => response.json())
+      .then(data => {
+        console.log("fetched data");
+        setCoords({longitude: data.longitude, latitude: data.latitude});
+      })
+  }
 
   return (
     <main>
